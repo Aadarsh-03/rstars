@@ -40,6 +40,12 @@
     <artifactId>selenium-java</artifactId>
     <version>3.141.59</version>
 </dependency>
+<!-- https://mvnrepository.com/artifact/com.deque.html.axe-core/selenium -->
+<dependency>
+    <groupId>com.deque.html.axe-core</groupId>
+    <artifactId>selenium</artifactId>
+    <version>4.5.0</version>
+</dependency>
 
 <dependency>
     <groupId>com.aventstack</groupId>
