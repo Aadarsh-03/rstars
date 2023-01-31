@@ -73,6 +73,16 @@
 			</class>
 		</classes>
 	</test>
+	<test name="Parameter Test eight">
+		<parameter name="ScenarioName1" value="TS_PM_COA_SEC_AgencyObjectGroupProfile_Regression_001" />
+		<classes>
+			<class name="KeywordDriverUtil.KeywordTestNG">
+				<methods>
+					<include name="ExecuteTest1" />
+				</methods>
+			</class>
+		</classes>
+	</test>
 
 
 
