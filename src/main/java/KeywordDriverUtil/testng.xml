@@ -104,6 +104,39 @@
 			</class>
 		</classes>
 	</test>
+	
+	<test name="Parameter Test eleven">
+		<parameter name="ScenarioName1" value="TS_SM_FOU_GAAPSourceObjectProfile_Regression_001" />
+		<classes>
+			<class name="KeywordDriverUtil.KeywordTestNG">
+				<methods>
+					<include name="ExecuteTest1" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+	
+	<test name="Parameter Test twelve">
+		<parameter name="ScenarioName1" value="TS_PM_COA_SEC_AgencyGLAccountProfile_Regression_001" />
+		<classes>
+			<class name="KeywordDriverUtil.KeywordTestNG">
+				<methods>
+					<include name="ExecuteTest1" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+	
+	<test name="Parameter Test thirteen">
+		<parameter name="ScenarioName1" value="TS_PM_COA_SEC_ProgramCodeProfile_Regression_001" />
+		<classes>
+			<class name="KeywordDriverUtil.KeywordTestNG">
+				<methods>
+					<include name="ExecuteTest1" />
+				</methods>
+			</class>
+		</classes>
+	</test>
 
 
 </suite> <!-- Suite -->
