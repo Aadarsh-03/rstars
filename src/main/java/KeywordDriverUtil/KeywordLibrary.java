@@ -1517,9 +1517,11 @@ public class KeywordLibrary extends WebDriverHelper {
 			if (!keywordModel.onFailLog.equalsIgnoreCase("")) {
 				ReportUtilities.Log(driver,"Verifying that " + keywordModel.objectName + " Element is not present", keywordModel.onFailLog,
 						Status.FAIL , keywordModel);
+				throw new RuntimeException();
 			} else {
 				ReportUtilities.Log(driver,"Verifying that " + keywordModel.objectName + " Element is not present",
 						"The Element " + keywordModel.objectName + " is  present", Status.FAIL , keywordModel);
+				throw new RuntimeException();
 			}
 		}
 	}
@@ -1639,6 +1641,7 @@ public class KeywordLibrary extends WebDriverHelper {
 									+ ". Text found: " + keywordModel.dynaElement.getText(),
 									Status.FAIL , keywordModel);
 							storeEDMResult(driver, keywordModel);
+							throw new RuntimeException();
 						//	driver.wait();
 						}
 					}
@@ -1675,6 +1678,7 @@ public class KeywordLibrary extends WebDriverHelper {
 									+ ". Text found: " + findElementByType(driver, keywordModel).getText(),
 									Status.FAIL , keywordModel);
 							storeEDMResult(driver, keywordModel);
+							throw new RuntimeException();
 							//driver.wait();
 						}
 					}
