@@ -1,6 +1,8 @@
 package KeywordDriverUtil;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -37,9 +39,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.remote.server.DriverFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.deque.html.axecore.results.CheckedNode;
+import com.deque.html.axecore.results.Results;
+import com.deque.html.axecore.selenium.AxeBuilder;
 
 //import APIHelpers.APIController;
 import Common.POI_ReadExcel;
@@ -57,6 +64,18 @@ import TestSettings.TestRunSettings;
 import Constants.UIPerfConstants;
 import Model.UIPerfModel;
 import utilities.NavigationTimeHelper;
+
+import java.text.SimpleDateFormat;
+
+
+
+import com.deque.html.axecore.selenium.AxeBuilder;
+import com.deque.html.axecore.selenium.AxeReporter;
+import com.deque.html.axecore.selenium.ResultType;
+import com.deque.html.axecore.results.Results;
+import com.deque.html.axecore.results.Rule;
+import static com.deque.html.axecore.selenium.AxeReporter.getReadableAxeResults;
+import static org.testng.Assert.assertTrue;
 
 public class KeywordLibrary extends WebDriverHelper {
 	DriverSession sessionManager = new DriverSession();
@@ -1525,7 +1544,107 @@ public class KeywordLibrary extends WebDriverHelper {
 			}
 		}
 	}
+	 private static String reportPath = System.getProperty("user.dir") + "\\src\\test\\java\\reports\\";
 
+	public void checkAccessibility(WebDriver driver, KeywordModel keywordModel) throws FileNotFoundException {
+		System.out.println(keywordModel.scenario + "Adarsh");
+
+		
+		String strHelp = "";
+		String strImpact = "";
+		String strDescription = "";
+		String strHelpUrl = "";
+		String strId = "";
+		String strTags = "";
+		String strNodeHTLML;
+		String strNodeTarget;
+		StringBuilder axeResults = new StringBuilder();
+		String screenName=keywordModel.objectName;
+		String folderName=keywordModel.scenario;
+//		String isItEnabled = Commons.getProperty("config", "axeutility");
+
+//		if (Commons.getProperty("config", "axeutility").equalsIgnoreCase("enabled")) {
+//			Commons.waitTillPageLoad(driver, wait);
+//			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+			AxeBuilder builder = new AxeBuilder();
+//			String timeoutFilePath = Constants.PROJECT_DIRECTORY + "\\src\\test\\resources\\axe.min.js";
+			axeResults.append("Screen Name,Help,Impact,Description,Help Url,Id,Tags");
+			axeResults.append(System.lineSeparator());
+			//				FileAxeScriptProvider axeScriptProvider;
+			//				axeScriptProvider = new FileAxeScriptProvider(timeoutFilePath);
+			//				builder.setAxeScriptProvider(axeScriptProvider);
+							Results result = builder.analyze(driver);
+							List<Rule> violations = result.getViolations();
+							
+							String url=driver.getCurrentUrl();
+							String PageID = url.substring(url.lastIndexOf("/") + 1, url.length());
+				
+							System.out.println("Violation of the Screen "+screenName+":"+violations.size());
+			
+							if (violations.size() == 0) {
+			//					assertTrue("No violations found", true);
+			//					logger.log(Status.PASS, "No violations found: " + screenName + " with PageID: " + PageID);
+								System.out.println("No violations found: " + screenName);
+							} 
+							else {
+			//					logger.log(Status.FAIL, "ADA violations exists on the page: " + screenName + " with PageID: " + PageID);
+								System.out.println("ADA violations exists on the page: " + screenName+ PageID);
+							}
+			
+							for (Rule element : violations) {
+								strHelp = element.getHelp();
+								strImpact = element.getImpact();
+								strDescription = "\"" + element.getDescription() + "\"";
+								strHelpUrl = element.getHelpUrl();
+								strId = element.getId();
+								strTags = "\"" + String.join(",", element.getTags()) + "\"";
+								;
+								axeResults.append(screenName + "," + strHelp + "," + strImpact + "," + strDescription + ","
+										+ strHelpUrl + "," + strId + "," + strTags);
+								axeResults.append(System.lineSeparator());
+								if (element.getNodes() != null && !element.getNodes().isEmpty()) {
+									for (CheckedNode item : element.getNodes()) {
+										if (item.getHtml().trim().length() > 0 && item.getTarget().toString().trim().length() > 0) {
+											axeResults.append(screenName + "," + strHelp + "," + strImpact + "," + strDescription
+													+ "," + strHelpUrl + "," + "\"" + item.getHtml() + "\"" + "," + "\""
+													+ item.getTarget() + "\"");
+											axeResults.append(System.lineSeparator());
+										}
+									}
+								}
+							}
+			//				File directory = new File(Constants.PROJECT_DIRECTORY + "\\ADA Results\\JSON Format\\"
+			//						+ Commons.enterRequiredDate(0, 0, 0).replace("/", ""));
+							File directory = new File(reportPath+ folderName );
+							if (!directory.exists()) {
+								directory.mkdir();
+							}
+							BufferedWriter writer = null;
+							System.out
+									.println(reportPath + "AccessibilityReport_"
+											+ screenName + "_"  + ".csv");
+							File file = new File(
+									reportPath +folderName+"//" + screenName+".csv");
+							try {
+								writer = new BufferedWriter(new FileWriter(file));
+								writer.write(axeResults.toString());
+							} catch (Exception e1) {
+			
+							} finally {
+								if (writer != null) {
+									try {
+										writer.close();
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+							}
+
+		}
+	
+
+		
 	/**
 	 * Method Name: verifyElementDisplayed Return Type: Nothing Description: This
 	 * method verifies if the object is present in the Page structure, and is also
