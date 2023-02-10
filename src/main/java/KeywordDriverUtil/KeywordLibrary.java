@@ -717,7 +717,49 @@ public class KeywordLibrary extends WebDriverHelper {
 					findElementByType(driver, keywordModel).click();
 					Thread.sleep(1000);
 					//driver.findElement(By.xpath("@id='"+keywordModel.objectID+"'")).click();
-					driver.findElement(By.xpath("//mat-option/span[contains(text(),'"+keywordModel.dataValue.toUpperCase()+"')]")).click();
+					driver.findElement(By.xpath("//mat-option/span[contains(text(),'"+keywordModel.dataValue+"')]")).click();
+					ReportUtilities.Log(driver,"Selecting by visible text in the dropdown " + keywordModel.objectName,
+							"Selected the value " + keywordModel.dataValue + " in the select box ", Status.PASS , keywordModel);
+				}
+			} catch (NoSuchElementException p) {
+				keywordModel.error = true;
+				keywordModel.displayError = true;
+				ReportUtilities.Log(driver,"Cannot select any value on the object.", "The Element " + keywordModel.objectName
+						+ " is NOT displayed on the current screen" + keywordModel.ScreenName, Status.FAIL , keywordModel);
+				throw new RuntimeException(p);
+			}
+		}
+	}
+	public  void selectByVisibleTextInput(WebDriver driver, KeywordModel keywordModel) throws InterruptedException {
+		if (keywordModel.dynaElement != null) {
+			try {
+				if (keywordModel.dynaElement.isDisplayed()) {
+					findElementByType(driver, keywordModel).click();
+					Thread.sleep(1000);
+//					driver.findElement(By.xpath("//mat-option/span[contains(text(),'" + keywordModel.dataValue + "')]")).click();
+					driver.findElement(By.xpath("//div[contains(@class,'ng-option')]/span[contains(text(),'" + keywordModel.dataValue + "')]")).click();
+					
+					//Select selectBox = new Select(keywordModel.dynaElement);
+					//selectBox.selectByVisibleText(keywordModel.dataValue);
+					ReportUtilities.Log(driver,"Selecting by visible text in the dropdown " + keywordModel.objectName,
+							"Selected the value " + keywordModel.dataValue + " in the select box ", Status.PASS , keywordModel);
+				}
+			} catch (NoSuchElementException p) {
+				keywordModel.error = true;
+				keywordModel.displayError = true;
+				ReportUtilities.Log(driver,"Cannot select any value on the object.", "The Element " + keywordModel.objectName
+						+ " is NOT displayed on the current screen" + keywordModel.ScreenName, Status.FAIL , keywordModel);
+				throw new RuntimeException(p);
+			}
+		} else {
+			try {
+				if (findElementByType(driver, keywordModel).isDisplayed()) {
+					//Select selectBox = new Select(findElementByType(driver, keywordModel));
+					//selectBox.selectByVisibleText(keywordModel.dataValue);
+					findElementByType(driver, keywordModel).click();
+					Thread.sleep(1000);
+					//driver.findElement(By.xpath("@id='"+keywordModel.objectID+"'")).click();
+					driver.findElement(By.xpath("//div[contains(@class,'ng-option')]/span[contains(text(),'" + keywordModel.dataValue + "')]")).click();
 					ReportUtilities.Log(driver,"Selecting by visible text in the dropdown " + keywordModel.objectName,
 							"Selected the value " + keywordModel.dataValue + " in the select box ", Status.PASS , keywordModel);
 				}
@@ -1511,6 +1553,7 @@ public class KeywordLibrary extends WebDriverHelper {
 					ReportUtilities.Log(driver,"Verifying the Presence of Element " + keywordModel.objectName,
 							"The Element " + keywordModel.objectName + " is  not present", Status.FAIL , keywordModel);
 					keywordModel.elementPresence = false;
+					throw new RuntimeException();
 				}
 			}
 		}
